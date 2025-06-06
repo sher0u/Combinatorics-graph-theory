@@ -1,3 +1,14 @@
+/*
+Enter number of vertices:5
+Enter number of edges:3
+Enter edges (u v) with 0-based indexing:
+0 1 
+1 2
+3 4
+Connected components:
+0 1 2
+3 4
+*/
 // Алгоритм поиска компонент связности
 #include <iostream>
 #include <vector>
