@@ -1,3 +1,15 @@
+/* How to run this program
+Enter number of vertices:5
+Enter number of edges:5
+Enter edges in format: source destination weight
+1 3 2
+4 3 -1
+2 4 1
+1 2 1
+0 1 5
+Enter source vertex:0
+Shortest distances from vertex 0: 0 5 6 6 7
+*/
 //Алгоритм Беллмана-Форда.
 #include <iostream>
 #include <vector>
