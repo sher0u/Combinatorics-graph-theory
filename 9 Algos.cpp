@@ -1,3 +1,15 @@
+/*
+Enter number of vertices:5
+Enter number of edges:5
+Enter edges in format: u v weight
+0 1 4
+0 2 8
+1 4 6
+2 3 2
+3 4 10
+Enter source vertex:0
+Shortest distances from vertex 0: 0 4 8 10 10
+*/
 //Алгоритм Дейкстры
 #include <iostream>
 #include <vector>
