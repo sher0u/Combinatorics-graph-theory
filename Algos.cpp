@@ -1,4 +1,4 @@
-//Алгоритм поиска в глубину
+//1Алгоритм поиска в глубину
 #include <iostream>
 #include <list>
 using namespace std;
@@ -70,7 +70,7 @@ int main() {
 }
 
 -------------------------------------------------------------------------------------------------
-  // Алгоритм поиска в ширину
+  //2Алгоритм поиска в ширину
 
 #include <iostream>
 #include <queue>
@@ -170,7 +170,7 @@ int main()
 }
 
 -------------------------------------------------------------------------------------------------
-Алгоритм топологической сортировки
+//3Алгоритм топологической сортировки
 #include <iostream>
 #include <list>
 #include <stack>
@@ -248,7 +248,7 @@ int main() {
     return 0;
 }
 -------------------------------------------------------------------------------------------------
-//Алгоритм Форда-Фалкерсона для поиска 
+//5Алгоритм Форда-Фалкерсона для поиска 
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -385,7 +385,7 @@ int main() {
     return 0;
 }
 -------------------------------------------------------------------------------------------------
-//Алгоритм нахождения всех мостов графа.
+//6Алгоритм нахождения всех мостов графа.
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -513,7 +513,7 @@ int main()
 }
 
 -------------------------------------------------------------------------------------------------
-// Алгоритм поиска компонент связности
+// 8 Алгоритм поиска компонент связности
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -612,3 +612,166 @@ int main() {
 
     return 0;
 }
+
+-------------------------------------------------------------------------------------------------
+// 9 Алгоритм Косарайю
+#include <iostream>
+#include <list>
+#include <stack>
+using namespace std;
+
+class Graph {
+    int V;
+    list<int>* adj;
+
+    void DFSUtil(int v, bool visited[]);
+
+public:
+    Graph(int V)
+    {
+        this->V = V;
+        adj = new list<int>[V];
+    }
+    ~Graph() { delete[] adj; }
+
+    void addEdge(int v, int w);
+    bool isSC();
+    Graph getTranspose();
+};
+
+void Graph::DFSUtil(int v, bool visited[])
+{
+    visited[v] = true;
+    list<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+        if (!visited[*i])
+            DFSUtil(*i, visited);
+}
+
+Graph Graph::getTranspose()
+{
+    Graph g(V);
+    for (int v = 0; v < V; v++) {
+        list<int>::iterator i;
+        for (i = adj[v].begin(); i != adj[v].end(); ++i) {
+            g.adj[*i].push_back(v);
+        }
+    }
+    return g;
+}
+
+void Graph::addEdge(int v, int w)
+{
+    adj[v].push_back(w);
+}
+
+bool Graph::isSC()
+{
+    bool visited[V];
+    for (int i = 0; i < V; i++)
+        visited[i] = false;
+
+    DFSUtil(0, visited);
+
+    for (int i = 0; i < V; i++)
+        if (visited[i] == false)
+            return false;
+
+    Graph gr = getTranspose();
+
+    for (int i = 0; i < V; i++)
+        visited[i] = false;
+
+    gr.DFSUtil(0, visited);
+
+    for (int i = 0; i < V; i++)
+        if (visited[i] == false)
+            return false;
+
+    return true;
+}
+
+int main()
+{
+    int V, E;
+    cout << "Enter number of vertices: ";
+    cin >> V;
+    cout << "Enter number of edges: ";
+    cin >> E;
+
+    Graph g(V);
+    cout << "Enter edges (format: from to) each in a new line:\n";
+    for (int i = 0; i < E; ++i) {
+        int u, v;
+        cin >> u >> v;
+        g.addEdge(u, v);
+    }
+
+    g.isSC() ? cout << "Yes\n" : cout << "No\n";
+
+    return 0;
+}
+-------------------------------------------------------------------------------------------------
+//10алгоритма Флойда-Уоршелла
+#include <iostream>
+#include <algorithm>
+
+//Максимальное значение веса = 100
+#define INF 101
+
+using namespace std;
+
+void printMatrix(int** matrix, int numberOfVert) {
+    for(int i = 0; i < numberOfVert; i++) {
+        for(int j = 0; j < numberOfVert; j++) {
+            if(matrix[i][j] == INF) {
+                cout << "INF" << " ";
+            }
+            else {
+                cout << matrix[i][j] << " ";
+            }
+        }
+        cout << endl;
+    }
+}
+
+void originalFloydWarshall(int **matrix, int numberOfVert) {
+    for(int k = 0; k < numberOfVert; k++) {
+        for(int i = 0; i < numberOfVert; i++) {
+            for(int j = 0; j < numberOfVert; j++) {
+                matrix[i][j] = min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+            }
+        }
+    }
+    return;
+}
+
+int main(int argc, char** argv) {
+    int numberOfVert;
+    cout << "Enter number of vertices: ";
+    cin >> numberOfVert;
+
+    // Матрица смежности с весами ребер графа (101 - ребра нет, 0 - ребро в себя)
+    int **matrix = (int**)malloc(sizeof(int) * numberOfVert);
+    for(int i = 0; i < numberOfVert; i++) {
+        matrix[i] = (int *) malloc(sizeof(int) * numberOfVert);
+    }
+
+    cout << "Enter adjacency matrix (" << numberOfVert << " x " << numberOfVert << "), use 101 for INF:\n";
+    for(int i = 0; i < numberOfVert; i++) {
+        for(int j = 0; j < numberOfVert; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+
+    cout << "Old matrix" << endl;
+    printMatrix(matrix, numberOfVert);
+
+    originalFloydWarshall(matrix, numberOfVert);
+
+    cout << "New matrix" << endl;
+    printMatrix(matrix, numberOfVert);
+
+    return 0;
+}
+-------------------------------------------------------------------------------------------------
