@@ -1,4 +1,4 @@
-// 8 Алгоритм поиска компонент связности
+// Алгоритм поиска компонент связности
 #include <iostream>
 #include <vector>
 using namespace std;
