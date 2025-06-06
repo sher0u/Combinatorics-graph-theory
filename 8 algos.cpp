@@ -1,3 +1,28 @@
+/*
+Enter number of vertices:5
+Enter adjacency matrix (5 x 5), use 101 for INF:
+
+0 4 101 5 101
+101 0 1 101 6
+2 101 0 3 101
+101 101 1 0 2
+1 101 101 4 0
+
+Old matrix
+0 4 INF 5 INF
+INF 0 1 INF 6
+2 INF 0 3 INF
+INF INF 1 0 2
+1 INF INF 4 0
+
+New matrix
+0 4 5 5 7
+3 0 1 4 6
+2 6 0 3 5
+3 7 1 0 2
+1 5 5 4 0
+
+*/
 //алгоритма Флойда-Уоршелла
 #include <iostream>
 #include <algorithm>
