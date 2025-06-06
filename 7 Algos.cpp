@@ -1,4 +1,4 @@
-// 9 Алгоритм Косарайю
+// Алгоритм Косарайю
 #include <iostream>
 #include <list>
 #include <stack>
