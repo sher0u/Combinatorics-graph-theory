@@ -1,3 +1,15 @@
+/*
+Enter number of vertices:5
+Enter number of edges:6
+Enter edges (format: from to) each in a new line:
+0 1
+1 2
+2 3
+3 0
+2 4
+4 2
+Yes
+*/
 // Алгоритм Косарайю
 #include <iostream>
 #include <list>
