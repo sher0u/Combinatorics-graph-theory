@@ -59,6 +59,12 @@ int main() {
     int V, E;
     cout << "Enter the number of vertices (indexed from 0): ";
     cin >> V;
+
+    if (V <= 0) {
+        cout << "The number of vertices must be greater than 0." << endl;
+        return 1;
+    }
+
     Graph g(V);
 
     cout << "Enter the number of edges: ";
@@ -71,6 +77,11 @@ int main() {
         int src, dest;
         cout << "Edge " << i + 1 << ": ";
         cin >> src >> dest;
+        if (src < 0 || src >= V || dest < 0 || dest >= V) {
+            cout << "Invalid edge. Vertices must be in range [0, " << V - 1 << "]." << endl;
+            i--; // repeat the same edge input
+            continue;
+        }
         g.addEdge(src, dest);
     }
 
@@ -78,89 +89,13 @@ int main() {
     cout << "Enter the starting vertex for DFS (0 to " << V - 1 << "): ";
     cin >> startVertex;
 
+    if (startVertex < 0 || startVertex >= V) {
+        cout << "Invalid starting vertex." << endl;
+        return 1;
+    }
+
     g.DFS(startVertex);
-
-    return 0;
-}
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    /*
-Enter the number of vertices (indexed from 0):5
-Enter the number of edges:5
-Enter 5 edges in the format: src dest
-Note: vertices must be in the range [0, 4]
-Edge 1:1 2
-Edge 2:1 0
-Edge 3:2 0
-Edge 4:2 3
-Edge 5:2 4
-Enter the starting vertex for DFS (0 to 4):1
-1 0 2 4 3
-*/
-
-#include <iostream>
-#include <list>
-using namespace std;
-
-class DepthFirstSearchGraph {
-    int totalVertices;
-    list<int> *adjacencyLists;
-    bool *alreadyVisited;
-
-public:
-    DepthFirstSearchGraph(int verticesCount);
-    void connectDirected(int fromVertex, int toVertex);
-    void exploreFrom(int startVertex);
-};
-
-DepthFirstSearchGraph::DepthFirstSearchGraph(int verticesCount) {
-    totalVertices = verticesCount;
-    adjacencyLists = new list<int>[verticesCount];
-    alreadyVisited = new bool[verticesCount];
-    for (int index = 0; index < totalVertices; index++)
-        alreadyVisited[index] = false;
-}
-
-void DepthFirstSearchGraph::connectDirected(int fromVertex, int toVertex) {
-    adjacencyLists[fromVertex].push_front(toVertex);
-}
-
-void DepthFirstSearchGraph::exploreFrom(int currentVertex) {
-    alreadyVisited[currentVertex] = true;
-    cout << currentVertex << " ";
-
-    for (int adjacent : adjacencyLists[currentVertex]) {
-        if (!alreadyVisited[adjacent]) {
-            exploreFrom(adjacent);
-        }
-    }
-}
-
-int main() {
-    int numberOfVertices, numberOfConnections;
-
-    cout << "Total vertices (start from 0): ";
-    cin >> numberOfVertices;
-
-    DepthFirstSearchGraph dfsGraph(numberOfVertices);
-
-    cout << "How many directed connections (edges)? ";
-    cin >> numberOfConnections;
-
-    cout << "Input " << numberOfConnections << " edges as: source destination" << endl;
-    cout << "Valid vertex range: [0 to " << numberOfVertices - 1 << "]" << endl;
-
-    for (int edgeIndex = 1; edgeIndex <= numberOfConnections; edgeIndex++) {
-        int fromNode, toNode;
-        cout << "Connection #" << edgeIndex << ": ";
-        cin >> fromNode >> toNode;
-        dfsGraph.connectDirected(fromNode, toNode);
-    }
-
-    int initialExplorer;
-    cout << "Start exploring from vertex: ";
-    cin >> initialExplorer;
-
-    dfsGraph.exploreFrom(initialExplorer);
+    cout << endl;
 
     return 0;
 }
