@@ -109,3 +109,85 @@ int main()
 
     return 0;
 }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ /*
+Enter the number of vertices:5
+Enter the number of edges:5
+Enter edges in the format: src dest
+1 2
+0 2 3
+0 4
+1 4
+2 3
+Enter the starting vertex: Breadth-First Traversal (starting from vertex 3):
+3 0 2 1 4
+*/
+
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+class BreadthFirstSearchGraph {
+    int totalVertices;
+    vector<vector<int>> connectionMap;
+
+public:
+    BreadthFirstSearchGraph(int vertexCount) {
+        totalVertices = vertexCount;
+        connectionMap.resize(vertexCount);
+    }
+
+    void linkUndirected(int vertexA, int vertexB) {
+        connectionMap[vertexA].push_back(vertexB);
+        connectionMap[vertexB].push_back(vertexA);
+    }
+
+    void traverseFrom(int startingPoint) {
+        vector<bool> wasVisited(totalVertices, false);
+        queue<int> frontier;
+
+        wasVisited[startingPoint] = true;
+        frontier.push(startingPoint);
+
+        while (!frontier.empty()) {
+            int current = frontier.front();
+            cout << current << " ";
+            frontier.pop();
+
+            for (int neighbor : connectionMap[current]) {
+                if (!wasVisited[neighbor]) {
+                    wasVisited[neighbor] = true;
+                    frontier.push(neighbor);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    int numberOfNodes, numberOfLinks;
+    cout << "Enter the number of vertices: ";
+    cin >> numberOfNodes;
+
+    BreadthFirstSearchGraph bfsGraph(numberOfNodes);
+
+    cout << "Enter the number of edges: ";
+    cin >> numberOfLinks;
+
+    cout << "Enter edges in the format: src dest\n";
+    for (int i = 0; i < numberOfLinks; i++) {
+        int from, to;
+        cin >> from >> to;
+        bfsGraph.linkUndirected(from, to);
+    }
+
+    int startPoint;
+    cout << "Enter the starting vertex: ";
+    cin >> startPoint;
+
+    cout << "Breadth-First Traversal (starting from vertex " << startPoint << "):\n";
+    bfsGraph.traverseFrom(startPoint);
+
+    return 0;
+}
