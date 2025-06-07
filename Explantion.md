@@ -460,4 +460,202 @@ int main() {
 
     return 0;
 }
+---
 ```
+## 4 Алгоритм Форда-Фалкерсона  для поиска максимального потока 
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
+#include <tuple>
+#include <set>
+
+using namespace std;
+
+class FlowNetwork {
+public:
+    int V; // Количество вершин / Number of vertices
+    vector<vector<int>> capacity; // Матрица пропускных способностей / Capacity matrix
+    vector<vector<int>> adj; // Список смежности / Adjacency list
+
+    FlowNetwork(int vertices) {
+        V = vertices;
+        capacity.assign(V, vector<int>(V, 0));
+        adj.resize(V);
+    }
+
+    void addEdge(int u, int v, int cap) {
+        // Если ребро еще не добавлено (прямое и обратное ребро)
+        // If the edge does not exist yet (direct and reverse edge)
+        if (capacity[u][v] == 0 && capacity[v][u] == 0) {
+            adj[u].push_back(v);
+            adj[v].push_back(u); // Добавляем обратное ребро для остаточной сети / Add reverse edge for residual graph
+        }
+        capacity[u][v] += cap; // Если параллельные рёбра, суммируем пропускные способности / Sum capacities if parallel edges
+    }
+};
+
+// Поиск в ширину (BFS) для нахождения увеличивающего пути
+// Breadth-First Search (BFS) to find augmenting path
+int bfs(FlowNetwork &network, int s, int t, vector<int> &parent) {
+    fill(parent.begin(), parent.end(), -1); // Инициализация массива родителей / Initialize parent array
+    parent[s] = -2; // Исток помечаем специальным значением / Mark source with special value
+    queue<pair<int, int>> q;
+    q.push({s, numeric_limits<int>::max()}); // Начинаем с истока и максимально возможного потока / Start from source with infinite flow
+
+    while (!q.empty()) {
+        int u = q.front().first;
+        int flow = q.front().second;
+        q.pop();
+
+        for (int v : network.adj[u]) {
+            // Если вершина еще не посещена и пропускная способность положительна
+            // If vertex not visited and capacity > 0
+            if (parent[v] == -1 && network.capacity[u][v] > 0) {
+                parent[v] = u;
+                int new_flow = min(flow, network.capacity[u][v]); // Поток ограничен минимальной пропускной способностью на пути / Flow limited by min capacity on path
+                if (v == t)
+                    return new_flow; // Достигли стока, возвращаем найденный поток / Reached sink, return flow
+                q.push({v, new_flow});
+            }
+        }
+    }
+    return 0; // Увеличивающий путь не найден / No augmenting path found
+}
+
+// Алгоритм Эдмондса-Карпа для нахождения максимального потока
+// Edmonds-Karp algorithm for maximum flow
+int edmondsKarp(FlowNetwork &network, int source, int sink) {
+    int flow = 0;
+    vector<int> parent(network.V);
+    int new_flow;
+
+    // Пока существует увеличивающий путь
+    // While there is an augmenting path
+    while ((new_flow = bfs(network, source, sink, parent))) {
+        flow += new_flow; // Увеличиваем общий поток / Increase total flow
+        int v = sink;
+        // Обновляем остаточную сеть (уменьшаем прямые, увеличиваем обратные ребра)
+        // Update residual network (reduce forward edges, increase reverse edges)
+        while (v != source) {
+            int u = parent[v];
+            network.capacity[u][v] -= new_flow;
+            network.capacity[v][u] += new_flow;
+            v = u;
+        }
+    }
+
+    return flow; // Возвращаем максимальный поток / Return max flow
+}
+
+int main() {
+    int V, E;
+    cout << "Enter number of vertices:";
+    cin >> V;
+
+    if (V <= 1) {
+        cout << "Number of vertices must be > 1. Exiting.\n";
+        return 1;
+    }
+
+    cout << "Enter number of edges:";
+    cin >> E;
+
+    if (E < 0) {
+        cout << "Number of edges cannot be negative. Exiting.\n";
+        return 1;
+    }
+
+    FlowNetwork network(V);
+    set<pair<int, int>> existingEdges;
+
+    cout << "\nEnter edges in the format: from to capacity (1-based indices):\n";
+    for (int i = 0; i < E; ++i) {
+        int u, v, cap;
+        cout << "Edge " << i + 1 << ":";
+        cin >> u >> v >> cap;
+
+        u--; v--; // Конвертация в 0-базированный индекс / Convert to 0-based index
+
+        // Проверка корректности введенных данных / Validate input
+        if (u == v || u < 0 || u >= V || v < 0 || v >= V || cap <= 0) {
+            cout << "Invalid edge. Try again.\n";
+            i--;
+            continue;
+        }
+
+        // Проверка на повторное ребро / Check for duplicate edge
+        if (existingEdges.count({u, v})) {
+            cout << "Edge already exists. Try again.\n";
+            i--;
+            continue;
+        }
+
+        existingEdges.insert({u, v});
+        network.addEdge(u, v, cap);
+    }
+
+    int source, sink;
+    cout << "\nEnter source vertex (1-based):";
+    cin >> source;
+    cout << "Enter sink vertex (1-based):";
+    cin >> sink;
+    source--; sink--; // Конвертация в 0-базированный индекс / Convert to 0-based
+
+    // Проверка корректности истока и стока / Validate source and sink
+    if (source == sink || source < 0 || sink < 0 || source >= V || sink >= V) {
+        cout << "Invalid source or sink.\n";
+        return 1;
+    }
+
+    int maxFlow = edmondsKarp(network, source, sink);
+    cout << "\nMaximum Flow: " << maxFlow << endl;
+
+    return 0;
+}
+---
+```
+Краткие шаги алгоритма / Short Steps of the Algorithm
+```
+    Создаем сеть с вершинами и ребрами с пропускными способностями.
+    Create a network with vertices and edges with capacities.
+
+    Ищем увеличивающий путь из истока в сток с помощью поиска в ширину (BFS).
+    Find an augmenting path from source to sink using BFS.
+
+    Если путь найден, вычисляем минимальную пропускную способность на этом пути.
+    If path is found, compute minimum capacity on this path.
+
+    Увеличиваем общий поток на эту минимальную пропускную способность.
+    Increase total flow by that minimum capacity.
+
+    Обновляем остаточную сеть: уменьшаем пропускные способности вдоль пути и увеличиваем обратные ребра.
+    Update residual network: decrease capacities along the path and increase reverse edges.
+
+    Повторяем, пока не будет найдено больше увеличивающих путей.
+    Repeat until no more augmenting paths exist.
+
+    Итоговый поток — максимальный поток сети.
+    Final flow is the maximum flow in the network.
+---
+```
+Пример ввода / Example input
+```
+Enter number of vertices:6 
+Enter number of edges:10
+Enter edges in the format: from to capacity (1-based indices):
+Edge 1:1 2 16
+Edge 2:1 3 13
+Edge 3:2 3 10
+Edge 4:3 2 4
+Edge 5:2 4 12
+Edge 6:4 3 9
+Edge 7:3 5 14
+Edge 8:5 4 7
+Edge 9:4 6 20
+Edge 10:5 6 4
+Enter source vertex (1-based):1
+Enter sink vertex (1-based):6
+Maximum Flow: 23
