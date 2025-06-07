@@ -1,4 +1,7 @@
 /*
+there is no direct edge (connection) between two vertices in the graph.
+*/
+/*
 Enter number of vertices:5
 Enter adjacency matrix (5 x 5), use 101 for INF:
 
