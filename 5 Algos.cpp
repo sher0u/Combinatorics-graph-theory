@@ -1,4 +1,17 @@
-//5Алгоритм нахождения всех мостов графа.
+/*
+Enter number of vertices:5 
+Enter number of edges:5
+Enter edges (u v) - 0-based indexing:
+1 0 
+0 2
+2 1
+0 3
+3 4
+Bridges in the graph:
+3 4
+0 3
+*/
+//Алгоритм нахождения всех мостов графа.
 #include<bits/stdc++.h>
 using namespace std;
 
