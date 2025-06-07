@@ -201,6 +201,35 @@ Enter the starting vertex: 3
 Breadth-First Traversal (starting from vertex 3):
 3 0 2 1 4
 ```
+## 🧠 Шаги работы алгоритма
+```
+
+### Шаг 1  
+![Шаг 1](![image](https://github.com/user-attachments/assets/8de4978e-a32b-4ba7-85e5-12a3edc12308)
+)
+
+### Шаг 2  
+![image](https://github.com/user-attachments/assets/ff1c4ec9-bd98-4b98-b8ac-d5fc18f9f20d)
+
+
+### Шаг 3  
+![image](https://github.com/user-attachments/assets/5deff6d6-39b8-468d-bbff-7f6d068c72f1)
+
+
+### Шаг 4  
+![image](https://github.com/user-attachments/assets/eccdb01c-c346-4f20-888a-c751d1d10f5f)
+
+
+### Шаг 5  
+![image](https://github.com/user-attachments/assets/691bfd1d-6dcf-48a3-b23c-a25227d84ad1)
+
+
+### Шаг 6  
+![image](https://github.com/user-attachments/assets/3725d149-a12b-41f3-826f-a8b75d9542f0)
+
+
+### Шаг 7
+![image](https://github.com/user-attachments/assets/e6127ae0-9fb8-45f0-bb14-773db7439b80)
 
 ---
 
