@@ -137,3 +137,102 @@ int main()
 
     return 0;
 }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /*
+Enter number of vertices:5
+Enter number of edges:5
+Enter edges (u v) - 0-based indexing:
+1 0
+0 2
+2 1
+0 3
+3 4
+Bridges in the graph:
+3 4
+0 3
+*/
+
+#include <iostream>
+#include <list>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class UndirectedGraph {
+    int vertexCount;
+    list<int>* adjacencyList;
+
+    void findBridgesDFS(int current, vector<bool>& visited, vector<int>& discoveryTime,
+                        vector<int>& lowTime, int parent);
+
+public:
+    UndirectedGraph(int vertices);
+    void addEdge(int u, int v);
+    void findBridges();
+};
+
+UndirectedGraph::UndirectedGraph(int vertices) {
+    vertexCount = vertices;
+    adjacencyList = new list<int>[vertices];
+}
+
+void UndirectedGraph::addEdge(int u, int v) {
+    adjacencyList[u].push_back(v);
+    adjacencyList[v].push_back(u);
+}
+
+void UndirectedGraph::findBridgesDFS(int current, vector<bool>& visited, vector<int>& discoveryTime,
+                                    vector<int>& lowTime, int parent) {
+    static int timeCounter = 0;
+    visited[current] = true;
+    discoveryTime[current] = lowTime[current] = ++timeCounter;
+
+    for (int neighbor : adjacencyList[current]) {
+        if (neighbor == parent)
+            continue;
+
+        if (visited[neighbor]) {
+            lowTime[current] = min(lowTime[current], discoveryTime[neighbor]);
+        } else {
+            findBridgesDFS(neighbor, visited, discoveryTime, lowTime, current);
+            lowTime[current] = min(lowTime[current], lowTime[neighbor]);
+            if (lowTime[neighbor] > discoveryTime[current]) {
+                cout << current << " " << neighbor << "\n";
+            }
+        }
+    }
+}
+
+void UndirectedGraph::findBridges() {
+    vector<bool> visited(vertexCount, false);
+    vector<int> discoveryTime(vertexCount, -1);
+    vector<int> lowTime(vertexCount, -1);
+
+    for (int i = 0; i < vertexCount; i++) {
+        if (!visited[i]) {
+            findBridgesDFS(i, visited, discoveryTime, lowTime, -1);
+        }
+    }
+}
+
+int main() {
+    int vertices, edges;
+    cout << "Enter number of vertices: ";
+    cin >> vertices;
+    UndirectedGraph graph(vertices);
+
+    cout << "Enter number of edges: ";
+    cin >> edges;
+
+    cout << "Enter edges (u v) - 0-based indexing:\n";
+    for (int i = 0; i < edges; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph.addEdge(u, v);
+    }
+
+    cout << "\nBridges in the graph:\n";
+    graph.findBridges();
+
+    return 0;
+}
