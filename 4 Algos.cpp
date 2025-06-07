@@ -1,5 +1,5 @@
 /*
-Enter number of vertices:6 
+Enter number of vertices:6
 Enter number of edges:10
 Enter edges in the format: from to capacity (1-based indices):
 Edge 1:1 2 16
@@ -16,21 +16,22 @@ Enter source vertex (1-based):1
 Enter sink vertex (1-based):6
 Maximum Flow: 23
 */
-// Алгоритм Форда-Фалкерсона для поиска 
+
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <limits>
 #include <tuple>
 #include <set>
+#include <limits>
 
 using namespace std;
 
 class FlowNetwork {
 public:
-    int V; // Number of vertices
-    vector<vector<int>> capacity; // Capacity matrix
-    vector<vector<int>> adj; // Adjacency list
+    int V;
+    vector<vector<int>> capacity;
+    vector<vector<int>> adj;
 
     FlowNetwork(int vertices) {
         V = vertices;
@@ -41,11 +42,22 @@ public:
     void addEdge(int u, int v, int cap) {
         if (capacity[u][v] == 0 && capacity[v][u] == 0) {
             adj[u].push_back(v);
-            adj[v].push_back(u); // Add reverse edge for residual graph
+            adj[v].push_back(u); // Residual edge
         }
-        capacity[u][v] += cap; // In case of parallel edges
+        capacity[u][v] += cap; // Handles parallel edges
     }
 };
+
+// Safely reads an integer, returns false if invalid
+bool readInt(int &value) {
+    cin >> value;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
+    }
+    return true;
+}
 
 int bfs(FlowNetwork &network, int s, int t, vector<int> &parent) {
     fill(parent.begin(), parent.end(), -1);
@@ -92,19 +104,16 @@ int edmondsKarp(FlowNetwork &network, int source, int sink) {
 
 int main() {
     int V, E;
-    cout << "Enter number of vertices:";
-    cin >> V;
 
-    if (V <= 1) {
-        cout << "Number of vertices must be > 1. Exiting.\n";
+    cout << "Enter number of vertices: ";
+    if (!readInt(V) || V < 2) {
+        cout << "Error: number of vertices must be >= 2.\n";
         return 1;
     }
 
-    cout << "Enter number of edges:";
-    cin >> E;
-
-    if (E < 0) {
-        cout << "Number of edges cannot be negative. Exiting.\n";
+    cout << "Enter number of edges: ";
+    if (!readInt(E) || E < 0) {
+        cout << "Error: number of edges must be non-negative.\n";
         return 1;
     }
 
@@ -114,198 +123,65 @@ int main() {
     cout << "\nEnter edges in the format: from to capacity (1-based indices):\n";
     for (int i = 0; i < E; ++i) {
         int u, v, cap;
-        cout << "Edge " << i + 1 << ":";
-        cin >> u >> v >> cap;
 
-        u--; v--; // Convert to 0-based
+        while (true) {
+            cout << "Edge " << i + 1 << ": ";
+            if (!readInt(u) || !readInt(v) || !readInt(cap)) {
+                cout << "Invalid input. Please enter three integers.\n";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
 
-        if (u == v || u < 0 || u >= V || v < 0 || v >= V || cap <= 0) {
-            cout << "Invalid edge. Try again.\n";
-            i--;
-            continue;
+            u--; v--; // Convert to 0-based
+
+            if (u < 0 || u >= V || v < 0 || v >= V) {
+                cout << "Error: vertex index out of range. Must be 1 to " << V << ".\n";
+                continue;
+            }
+
+            if (u == v) {
+                cout << "Error: self-loop is not allowed.\n";
+                continue;
+            }
+
+            if (cap <= 0) {
+                cout << "Error: capacity must be a positive integer.\n";
+                continue;
+            }
+
+            if (existingEdges.count({u, v})) {
+                cout << "Error: duplicate edge from " << u + 1 << " to " << v + 1 << ".\n";
+                continue;
+            }
+
+            existingEdges.insert({u, v});
+            network.addEdge(u, v, cap);
+            break;
         }
-
-        if (existingEdges.count({u, v})) {
-            cout << "Edge already exists. Try again.\n";
-            i--;
-            continue;
-        }
-
-        existingEdges.insert({u, v});
-        network.addEdge(u, v, cap);
     }
 
     int source, sink;
-    cout << "\nEnter source vertex (1-based):";
-    cin >> source;
-    cout << "Enter sink vertex (1-based):";
-    cin >> sink;
+    cout << "\nEnter source vertex (1-based): ";
+    if (!readInt(source)) {
+        cout << "Invalid source input.\n";
+        return 1;
+    }
+
+    cout << "Enter sink vertex (1-based): ";
+    if (!readInt(sink)) {
+        cout << "Invalid sink input.\n";
+        return 1;
+    }
+
     source--; sink--;
 
-    if (source == sink || source < 0 || sink < 0 || source >= V || sink >= V) {
-        cout << "Invalid source or sink.\n";
+    if (source < 0 || source >= V || sink < 0 || sink >= V || source == sink) {
+        cout << "Error: source and sink must be distinct and within range 1 to " << V << ".\n";
         return 1;
     }
 
     int maxFlow = edmondsKarp(network, source, sink);
     cout << "\nMaximum Flow: " << maxFlow << endl;
-
-    return 0;
-}
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    /*
-Enter number of vertices:6
-Enter number of edges:10
-Enter edges in the format: from to capacity (1-based indices):
-Edge 1:1 2 16
-Edge 2:1 3 13
-Edge 3:2 3 10
-Edge 4:3 2 4
-Edge 5:2 4 12
-Edge 6:4 3 9
-Edge 7:3 5 14
-Edge 8:5 4 7
-Edge 9:4 6 20
-Edge 10:5 6 4
-Enter source vertex (1-based):1
-Enter sink vertex (1-based):6
-Maximum Flow: 23
-*/
-
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <limits>
-#include <set>
-using namespace std;
-
-class FlowNetwork {
-public:
-    int vertexCount;
-    vector<vector<int>> capacityMatrix;
-    vector<vector<int>> adjacencyList;
-
-    FlowNetwork(int count) {
-        vertexCount = count;
-        capacityMatrix.assign(count, vector<int>(count, 0));
-        adjacencyList.resize(count);
-    }
-
-    void addDirectedEdge(int from, int to, int cap) {
-        if (capacityMatrix[from][to] == 0 && capacityMatrix[to][from] == 0) {
-            adjacencyList[from].push_back(to);
-            adjacencyList[to].push_back(from);
-        }
-        capacityMatrix[from][to] += cap;
-    }
-};
-
-int findAugmentingPath(FlowNetwork &network, int source, int sink, vector<int> &pathParent) {
-    fill(pathParent.begin(), pathParent.end(), -1);
-    pathParent[source] = -2;
-
-    queue<pair<int, int>> verticesQueue;
-    verticesQueue.push({source, numeric_limits<int>::max()});
-
-    while (!verticesQueue.empty()) {
-        int current = verticesQueue.front().first;
-        int flowAvailable = verticesQueue.front().second;
-        verticesQueue.pop();
-
-        for (int neighbor : network.adjacencyList[current]) {
-            if (pathParent[neighbor] == -1 && network.capacityMatrix[current][neighbor] > 0) {
-                pathParent[neighbor] = current;
-                int newFlow = min(flowAvailable, network.capacityMatrix[current][neighbor]);
-                if (neighbor == sink)
-                    return newFlow;
-                verticesQueue.push({neighbor, newFlow});
-            }
-        }
-    }
-
-    return 0;
-}
-
-int computeMaxFlow(FlowNetwork &network, int source, int sink) {
-    int totalFlow = 0;
-    vector<int> parent(network.vertexCount);
-
-    int flow;
-    while ((flow = findAugmentingPath(network, source, sink, parent))) {
-        totalFlow += flow;
-        int vertex = sink;
-
-        while (vertex != source) {
-            int prevVertex = parent[vertex];
-            network.capacityMatrix[prevVertex][vertex] -= flow;
-            network.capacityMatrix[vertex][prevVertex] += flow;
-            vertex = prevVertex;
-        }
-    }
-
-    return totalFlow;
-}
-
-int main() {
-    int numberOfVertices, numberOfEdges;
-    cout << "Enter number of vertices:";
-    cin >> numberOfVertices;
-
-    if (numberOfVertices <= 1) {
-        cout << "Number of vertices must be > 1. Exiting.\n";
-        return 1;
-    }
-
-    cout << "Enter number of edges:";
-    cin >> numberOfEdges;
-
-    if (numberOfEdges < 0) {
-        cout << "Number of edges cannot be negative. Exiting.\n";
-        return 1;
-    }
-
-    FlowNetwork network(numberOfVertices);
-    set<pair<int, int>> usedEdges;
-
-    cout << "\nEnter edges in the format: from to capacity (1-based indices):\n";
-    for (int i = 0; i < numberOfEdges; ++i) {
-        int from, to, capacity;
-        cout << "Edge " << i + 1 << ":";
-        cin >> from >> to >> capacity;
-
-        from--; to--; 
-
-        if (from == to || from < 0 || from >= numberOfVertices || to < 0 || to >= numberOfVertices || capacity <= 0) {
-            cout << "Invalid edge. Try again.\n";
-            i--;
-            continue;
-        }
-
-        if (usedEdges.count({from, to})) {
-            cout << "Edge already exists. Try again.\n";
-            i--;
-            continue;
-        }
-
-        usedEdges.insert({from, to});
-        network.addDirectedEdge(from, to, capacity);
-    }
-
-    int sourceVertex, sinkVertex;
-    cout << "\nEnter source vertex (1-based):";
-    cin >> sourceVertex;
-    cout << "Enter sink vertex (1-based):";
-    cin >> sinkVertex;
-
-    sourceVertex--; sinkVertex--;
-
-    if (sourceVertex == sinkVertex || sourceVertex < 0 || sinkVertex < 0 || sourceVertex >= numberOfVertices || sinkVertex >= numberOfVertices) {
-        cout << "Invalid source or sink.\n";
-        return 1;
-    }
-
-    int maximumFlow = computeMaxFlow(network, sourceVertex, sinkVertex);
-    cout << "\nMaximum Flow: " << maximumFlow << endl;
 
     return 0;
 }
