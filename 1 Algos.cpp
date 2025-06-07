@@ -1,4 +1,18 @@
-//1Алгоритм поиска в глубину
+/*
+Enter the number of vertices (indexed from 0):5
+Enter the number of edges:5
+Enter 5 edges in the format: src dest
+Note: vertices must be in the range [0, 4]
+Edge 1:1 2
+Edge 2:1 0
+Edge 3:2 0
+Edge 4:2 3
+Edge 5:2 4
+Enter the starting vertex for DFS (0 to 4):1
+1 0 2 4 3
+*/
+
+//Алгоритм поиска в глубину
 #include <iostream>
 #include <list>
 using namespace std;
