@@ -51,7 +51,19 @@
 Введите начальную вершину для DFS (от 0 до 4): 1
 1 0 2 4 3
 ```
-
+## 🧠 Шагы работа алгоритма
+1 steps:
+![image](https://github.com/user-attachments/assets/98e0608b-2a36-458c-8fde-be962c6b5a87)
+2 steps:
+![image](https://github.com/user-attachments/assets/8b851707-3d07-45c7-b51a-1925156be0ce)
+3 steps:
+![image](https://github.com/user-attachments/assets/135ad1a3-c6d8-4e16-9b8e-2b2c91313502)
+4 steps:
+![image](https://github.com/user-attachments/assets/caf829b3-f731-4b1e-8963-636ff930d030)
+5 steps:
+![image](https://github.com/user-attachments/assets/bfae437d-c7ef-47d3-87c9-4f0e277eab0f)
+6 steps:
+![image](https://github.com/user-attachments/assets/ffbc61d3-b15a-48e5-8fec-358f8a986225)
 ---
 
 ## 💻 Код на C++ с комментариями
