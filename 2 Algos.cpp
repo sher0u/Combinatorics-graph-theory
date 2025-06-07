@@ -1,4 +1,17 @@
- //2Алгоритм поиска в ширину
+/*
+Enter the number of vertices:5
+Enter the number of edges:5
+Enter edges in the format: src dest
+1 2
+0 2 3
+0 4
+1 4
+2 3
+Enter the starting vertex: Breadth-First Traversal (starting from vertex 3):
+3 0 2 1 4
+*/
+
+ //Алгоритм поиска в ширину
 
 #include <iostream>
 #include <queue>
