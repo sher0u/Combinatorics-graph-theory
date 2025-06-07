@@ -152,3 +152,160 @@ int main() {
 
     return 0;
 }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /*
+Enter number of vertices:6
+Enter number of edges:10
+Enter edges in the format: from to capacity (1-based indices):
+Edge 1:1 2 16
+Edge 2:1 3 13
+Edge 3:2 3 10
+Edge 4:3 2 4
+Edge 5:2 4 12
+Edge 6:4 3 9
+Edge 7:3 5 14
+Edge 8:5 4 7
+Edge 9:4 6 20
+Edge 10:5 6 4
+Enter source vertex (1-based):1
+Enter sink vertex (1-based):6
+Maximum Flow: 23
+*/
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
+#include <set>
+using namespace std;
+
+class FlowNetwork {
+public:
+    int vertexCount;
+    vector<vector<int>> capacityMatrix;
+    vector<vector<int>> adjacencyList;
+
+    FlowNetwork(int count) {
+        vertexCount = count;
+        capacityMatrix.assign(count, vector<int>(count, 0));
+        adjacencyList.resize(count);
+    }
+
+    void addDirectedEdge(int from, int to, int cap) {
+        if (capacityMatrix[from][to] == 0 && capacityMatrix[to][from] == 0) {
+            adjacencyList[from].push_back(to);
+            adjacencyList[to].push_back(from);
+        }
+        capacityMatrix[from][to] += cap;
+    }
+};
+
+int findAugmentingPath(FlowNetwork &network, int source, int sink, vector<int> &pathParent) {
+    fill(pathParent.begin(), pathParent.end(), -1);
+    pathParent[source] = -2;
+
+    queue<pair<int, int>> verticesQueue;
+    verticesQueue.push({source, numeric_limits<int>::max()});
+
+    while (!verticesQueue.empty()) {
+        int current = verticesQueue.front().first;
+        int flowAvailable = verticesQueue.front().second;
+        verticesQueue.pop();
+
+        for (int neighbor : network.adjacencyList[current]) {
+            if (pathParent[neighbor] == -1 && network.capacityMatrix[current][neighbor] > 0) {
+                pathParent[neighbor] = current;
+                int newFlow = min(flowAvailable, network.capacityMatrix[current][neighbor]);
+                if (neighbor == sink)
+                    return newFlow;
+                verticesQueue.push({neighbor, newFlow});
+            }
+        }
+    }
+
+    return 0;
+}
+
+int computeMaxFlow(FlowNetwork &network, int source, int sink) {
+    int totalFlow = 0;
+    vector<int> parent(network.vertexCount);
+
+    int flow;
+    while ((flow = findAugmentingPath(network, source, sink, parent))) {
+        totalFlow += flow;
+        int vertex = sink;
+
+        while (vertex != source) {
+            int prevVertex = parent[vertex];
+            network.capacityMatrix[prevVertex][vertex] -= flow;
+            network.capacityMatrix[vertex][prevVertex] += flow;
+            vertex = prevVertex;
+        }
+    }
+
+    return totalFlow;
+}
+
+int main() {
+    int numberOfVertices, numberOfEdges;
+    cout << "Enter number of vertices:";
+    cin >> numberOfVertices;
+
+    if (numberOfVertices <= 1) {
+        cout << "Number of vertices must be > 1. Exiting.\n";
+        return 1;
+    }
+
+    cout << "Enter number of edges:";
+    cin >> numberOfEdges;
+
+    if (numberOfEdges < 0) {
+        cout << "Number of edges cannot be negative. Exiting.\n";
+        return 1;
+    }
+
+    FlowNetwork network(numberOfVertices);
+    set<pair<int, int>> usedEdges;
+
+    cout << "\nEnter edges in the format: from to capacity (1-based indices):\n";
+    for (int i = 0; i < numberOfEdges; ++i) {
+        int from, to, capacity;
+        cout << "Edge " << i + 1 << ":";
+        cin >> from >> to >> capacity;
+
+        from--; to--; 
+
+        if (from == to || from < 0 || from >= numberOfVertices || to < 0 || to >= numberOfVertices || capacity <= 0) {
+            cout << "Invalid edge. Try again.\n";
+            i--;
+            continue;
+        }
+
+        if (usedEdges.count({from, to})) {
+            cout << "Edge already exists. Try again.\n";
+            i--;
+            continue;
+        }
+
+        usedEdges.insert({from, to});
+        network.addDirectedEdge(from, to, capacity);
+    }
+
+    int sourceVertex, sinkVertex;
+    cout << "\nEnter source vertex (1-based):";
+    cin >> sourceVertex;
+    cout << "Enter sink vertex (1-based):";
+    cin >> sinkVertex;
+
+    sourceVertex--; sinkVertex--;
+
+    if (sourceVertex == sinkVertex || sourceVertex < 0 || sinkVertex < 0 || sourceVertex >= numberOfVertices || sinkVertex >= numberOfVertices) {
+        cout << "Invalid source or sink.\n";
+        return 1;
+    }
+
+    int maximumFlow = computeMaxFlow(network, sourceVertex, sinkVertex);
+    cout << "\nMaximum Flow: " << maximumFlow << endl;
+
+    return 0;
+}
