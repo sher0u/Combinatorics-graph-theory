@@ -345,6 +345,28 @@ Topological Sort of the given graph:
 
 ---
 ```
+## 🧠 Шаги работы алгоритма
+
+### Шаг 1  
+![image](https://github.com/user-attachments/assets/393a27a0-4c2e-4ed1-bede-f2bd8d9f0440)
+
+
+### Шаг 2  
+![image](https://github.com/user-attachments/assets/b64993b5-17bf-4fe7-914e-9158350ca486)
+
+
+### Шаг 3  
+![image](https://github.com/user-attachments/assets/1362335c-dd7b-4a7a-a5a7-f57e98ac3551)
+
+
+### Шаг 4  
+![image](https://github.com/user-attachments/assets/d11aa16e-3ae3-464b-8ed7-57ee1a2e8762)
+
+
+### Шаг 5  
+![image](https://github.com/user-attachments/assets/5b85de9e-5264-49e0-b5f5-32a839821cdf)
+
+
 ## 💻 Код на C++ с комментариями
 ```cpp
 // Алгоритм топологической сортировки / Topological Sort Algorithm
