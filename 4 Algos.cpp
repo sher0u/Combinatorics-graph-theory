@@ -1,4 +1,22 @@
-//4 Алгоритм Форда-Фалкерсона для поиска 
+/*
+Enter number of vertices:6 
+Enter number of edges:10
+Enter edges in the format: from to capacity (1-based indices):
+Edge 1:1 2 16
+Edge 2:1 3 13
+Edge 3:2 3 10
+Edge 4:3 2 4
+Edge 5:2 4 12
+Edge 6:4 3 9
+Edge 7:3 5 14
+Edge 8:5 4 7
+Edge 9:4 6 20
+Edge 10:5 6 4
+Enter source vertex (1-based):1
+Enter sink vertex (1-based):6
+Maximum Flow: 23
+*/
+// Алгоритм Форда-Фалкерсона для поиска 
 #include <iostream>
 #include <vector>
 #include <queue>
