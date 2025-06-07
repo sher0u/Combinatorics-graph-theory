@@ -1,3 +1,16 @@
+/*
+Enter the number of vertices:6
+Enter the number of edges:6
+Enter edges in the format: src dest
+Edge 1:2 3 
+Edge 2:3 1
+Edge 3:4 0
+Edge 4:4 1
+Edge 5:5 0
+Edge 6:5 2
+Topological Sort of the given graph:
+5 4 2 3 1 0
+*/
 //3Алгоритм топологической сортировки
 #include <iostream>
 #include <list>
